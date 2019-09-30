@@ -58,5 +58,9 @@ public class FlappyBee {
     public float getY() {
         return y;
     }
+
+    public Circle getCollisionCircle() {
+        return collisionCircle;
+    }
 }
 

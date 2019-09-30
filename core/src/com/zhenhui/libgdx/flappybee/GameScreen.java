@@ -82,9 +82,11 @@ public class GameScreen extends ScreenAdapter {
 
     private void update(float delta) {
 
+        flappyBee.update();
+
         updateFlowers(delta);
 
-        flappyBee.update();
+        checkForCollision();
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             flappyBee.flayUp();
@@ -119,6 +121,16 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void checkForCollision() {
+
+        for (Flower flower : flowers) {
+            if (flower.isFlappyBeeColliding(flappyBee)) {
+                restartGame();
+                return;
+            }
+        }
+    }
+
     private void removeFlowersIfPassed() {
         if (!flowers.isEmpty()) {
             Flower flower = flowers.first();
@@ -128,11 +140,10 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private Flower createNewFlower() {
+    private void createNewFlower() {
         Flower flower = new Flower();
         flower.setPosition(Constants.WORLD_WIDTH + Flower.WIDTH);
         flowers.add(flower);
-        return flower;
     }
 
     @Override
@@ -140,10 +151,14 @@ public class GameScreen extends ScreenAdapter {
         viewport.update(width, height);
     }
 
-
     private void blackFlappyBeeLeaveTheWorld() {
         flappyBee.setPosition(flappyBee.getX()
-                , MathUtils.clamp(flappyBee.getY(), 0, Constants.WORLD_HEIGHT));
+                , MathUtils.clamp(flappyBee.getY(), 24, Constants.WORLD_HEIGHT));
+    }
+
+    private void restartGame() {
+        flappyBee.setPosition(Constants.WORLD_WIDTH / 4, Constants.WORLD_HEIGHT / 2);
+        flowers.clear();
     }
 }
 

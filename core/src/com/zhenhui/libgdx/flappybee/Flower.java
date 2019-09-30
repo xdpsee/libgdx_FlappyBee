@@ -2,6 +2,7 @@ package com.zhenhui.libgdx.flappybee;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -66,6 +67,17 @@ public class Flower {
         ceilingCollisionRectangle.setX(x);
         collisionCircle.setX(x + COLLISION_RECTANGLE_WIDTH / 2);
         ceilingCollisionCircle.setX(x + COLLISION_RECTANGLE_WIDTH / 2);
+    }
+
+    public boolean isFlappyBeeColliding(FlappyBee flappyBee) {
+
+        Circle flappyBeeCircle = flappyBee.getCollisionCircle();
+
+        return Intersector.overlaps(flappyBeeCircle, collisionCircle)
+                || Intersector.overlaps(flappyBeeCircle, collisionRectangle)
+                || Intersector.overlaps(flappyBeeCircle, ceilingCollisionCircle)
+                || Intersector.overlaps(flappyBeeCircle, ceilingCollisionRectangle);
+
     }
 
     public void drawDebug(ShapeRenderer renderer) {
