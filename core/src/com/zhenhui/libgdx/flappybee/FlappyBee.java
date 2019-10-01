@@ -2,6 +2,7 @@ package com.zhenhui.libgdx.flappybee;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.MathUtils;
 
 public class FlappyBee {
 
@@ -41,22 +42,13 @@ public class FlappyBee {
 
         ySpeed -= DIVE_ACCEL;
 
-        setPosition(x, y + ySpeed);
-
+        setPosition(x, MathUtils.clamp(y + ySpeed, 24, Constants.WORLD_HEIGHT));
     }
 
     public void drawDebug(ShapeRenderer renderer) {
         if (renderer != null) {
             renderer.circle(collisionCircle.x, collisionCircle.y, collisionCircle.radius);
         }
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
     }
 
     public Circle getCollisionCircle() {

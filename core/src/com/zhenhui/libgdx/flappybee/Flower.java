@@ -1,5 +1,6 @@
 package com.zhenhui.libgdx.flappybee;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
@@ -72,6 +73,8 @@ public class Flower {
     public boolean isFlappyBeeColliding(FlappyBee flappyBee) {
 
         Circle flappyBeeCircle = flappyBee.getCollisionCircle();
+
+        Gdx.app.log("POS", "flappyBee : " + flappyBeeCircle.toString());
 
         return Intersector.overlaps(flappyBeeCircle, collisionCircle)
                 || Intersector.overlaps(flappyBeeCircle, collisionRectangle)

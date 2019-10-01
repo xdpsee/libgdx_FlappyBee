@@ -71,11 +71,12 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setProjectionMatrix(camera.projection);
         shapeRenderer.setTransformMatrix(camera.view);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        flappyBee.drawDebug(shapeRenderer);
 
         for (Flower flower : flowers) {
             flower.drawDebug(shapeRenderer);
         }
+
+        flappyBee.drawDebug(shapeRenderer);
 
         shapeRenderer.end();
     }
@@ -92,7 +93,7 @@ public class GameScreen extends ScreenAdapter {
             flappyBee.flayUp();
         }
 
-        blackFlappyBeeLeaveTheWorld();
+
     }
 
     private void updateFlowers(float delta) {
@@ -133,9 +134,9 @@ public class GameScreen extends ScreenAdapter {
 
     private void removeFlowersIfPassed() {
         if (!flowers.isEmpty()) {
-            Flower flower = flowers.first();
-            if (flower.getX() < -Flower.WIDTH) {
-                flowers.removeValue(flower, true);
+            Flower firstFlower = flowers.first();
+            if (firstFlower.getX() < -Flower.WIDTH) {
+                flowers.removeValue(firstFlower, true);
             }
         }
     }
@@ -151,14 +152,9 @@ public class GameScreen extends ScreenAdapter {
         viewport.update(width, height);
     }
 
-    private void blackFlappyBeeLeaveTheWorld() {
-        flappyBee.setPosition(flappyBee.getX()
-                , MathUtils.clamp(flappyBee.getY(), 24, Constants.WORLD_HEIGHT));
-    }
-
     private void restartGame() {
-        flappyBee.setPosition(Constants.WORLD_WIDTH / 4, Constants.WORLD_HEIGHT / 2);
         flowers.clear();
+        flappyBee.setPosition(Constants.WORLD_WIDTH / 4, Constants.WORLD_HEIGHT / 2);
     }
 }
 
