@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -31,6 +30,10 @@ public class GameScreen extends ScreenAdapter {
 
     private Array<Flower> flowers = new Array<>();
 
+    private Background background;
+
+    private int score;
+
     public GameScreen() {
         camera = new OrthographicCamera();
         camera.position.set(new Vector2(Constants.WORLD_WIDTH / 2, Constants.WORLD_HEIGHT / 2), 0);
@@ -43,12 +46,20 @@ public class GameScreen extends ScreenAdapter {
 
         flappyBee = new FlappyBee(0, 0);
         flappyBee.setPosition(Constants.WORLD_WIDTH / 4, Constants.WORLD_HEIGHT / 2);
+
+        background = new Background();
     }
 
     @Override
     public void dispose() {
         shapeRenderer.dispose();
         batch.dispose();
+        background.dispose();
+        flappyBee.dispose();
+
+        for (Flower flower : flowers) {
+            flower.dispose();
+        }
     }
 
     @Override
@@ -58,11 +69,19 @@ public class GameScreen extends ScreenAdapter {
 
         clearScreen();
 
-        drawDebug();
+        //drawDebug();
 
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
+
+        background.draw(batch);
+
+        for (Flower flower : flowers) {
+            flower.draw(batch);
+        }
+
+        flappyBee.draw(batch);
 
         batch.end();
     }
@@ -83,17 +102,17 @@ public class GameScreen extends ScreenAdapter {
 
     private void update(float delta) {
 
-        flappyBee.update();
+        flappyBee.update(delta);
 
         updateFlowers(delta);
+
+        updateScore();
 
         checkForCollision();
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             flappyBee.flayUp();
         }
-
-
     }
 
     private void updateFlowers(float delta) {
@@ -104,6 +123,14 @@ public class GameScreen extends ScreenAdapter {
 
         checkIfNewFlowerIsNeeded();
         removeFlowersIfPassed();
+    }
+
+    private void updateScore() {
+
+        Flower flower = flowers.first();
+        if (flower.getX() < flappyBee.getX()) {
+            score += 10;
+        }
     }
 
     private void clearScreen() {

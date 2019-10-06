@@ -1,19 +1,22 @@
 package com.zhenhui.libgdx.flappybee;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Flower {
+public class Flower implements Disposable {
 
     private static final float MAX_SPEED_PER_SECOND = 100F;
 
     private static final float COLLISION_CIRCLE_RADIUS = 33f;
 
-    private static final float COLLISION_RECTANGLE_WIDTH = 13f;
+    private static final float COLLISION_RECTANGLE_WIDTH = 12f;
 
     private static final float COLLISION_RECTANGLE_HEIGHT = 447f;
 
@@ -35,6 +38,10 @@ public class Flower {
 
     private Rectangle ceilingCollisionRectangle;
 
+    private Texture texture;
+
+    private Texture stem;
+
     public Flower() {
         this.y = MathUtils.random(HEIGHT_OFFSET);
         collisionRectangle = new Rectangle(x
@@ -51,6 +58,14 @@ public class Flower {
         ceilingCollisionCircle = new Circle(collisionCircle.x
                 , ceilingCollisionRectangle.y
                 , COLLISION_CIRCLE_RADIUS);
+        texture = new Texture(Gdx.files.internal("flower.png"));
+        stem = new Texture(Gdx.files.internal("stem.png"));
+    }
+
+    @Override
+    public void dispose() {
+        texture.dispose();
+        stem.dispose();
     }
 
     public void update(float delta) {
@@ -73,9 +88,6 @@ public class Flower {
     public boolean isFlappyBeeColliding(FlappyBee flappyBee) {
 
         Circle flappyBeeCircle = flappyBee.getCollisionCircle();
-
-        Gdx.app.log("POS", "flappyBee : " + flappyBeeCircle.toString());
-
         return Intersector.overlaps(flappyBeeCircle, collisionCircle)
                 || Intersector.overlaps(flappyBeeCircle, collisionRectangle)
                 || Intersector.overlaps(flappyBeeCircle, ceilingCollisionCircle)
@@ -104,5 +116,31 @@ public class Flower {
                     , ceilingCollisionCircle.y
                     , ceilingCollisionCircle.radius);
         }
+    }
+
+    public void draw(SpriteBatch batch) {
+
+        batch.draw(stem
+                , collisionRectangle.x
+                , collisionRectangle.y
+                , COLLISION_RECTANGLE_WIDTH
+                , COLLISION_RECTANGLE_HEIGHT);
+        batch.draw(stem
+                , ceilingCollisionRectangle.x
+                , ceilingCollisionRectangle.y
+                , COLLISION_RECTANGLE_WIDTH
+                , COLLISION_RECTANGLE_HEIGHT);
+        batch.draw(texture
+                , collisionCircle.x - COLLISION_CIRCLE_RADIUS
+                , collisionCircle.y - COLLISION_CIRCLE_RADIUS
+                , COLLISION_CIRCLE_RADIUS * 2
+                , COLLISION_CIRCLE_RADIUS * 2);
+
+        batch.draw(texture
+                , ceilingCollisionCircle.x - COLLISION_CIRCLE_RADIUS
+                , ceilingCollisionCircle.y - COLLISION_CIRCLE_RADIUS
+                , COLLISION_CIRCLE_RADIUS * 2
+                , COLLISION_CIRCLE_RADIUS * 2);
+
     }
 }
