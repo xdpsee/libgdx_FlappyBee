@@ -1,6 +1,5 @@
 package com.zhenhui.libgdx.flappybee;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -16,7 +15,7 @@ public class Flower implements Disposable {
 
     private static final float COLLISION_CIRCLE_RADIUS = 33f;
 
-    private static final float COLLISION_RECTANGLE_WIDTH = 12f;
+    private static final float COLLISION_RECTANGLE_WIDTH = 6f;
 
     private static final float COLLISION_RECTANGLE_HEIGHT = 447f;
 
@@ -42,8 +41,10 @@ public class Flower implements Disposable {
 
     private Texture stem;
 
-    public Flower() {
-        this.y = MathUtils.random(HEIGHT_OFFSET);
+    public Flower(Texture flowerTexture, Texture stemTexture) {
+        this.texture = flowerTexture;
+        this.stem = stemTexture;
+        this.y = MathUtils.random(HEIGHT_OFFSET, -100);
         collisionRectangle = new Rectangle(x
                 , y
                 , COLLISION_RECTANGLE_WIDTH
@@ -58,8 +59,7 @@ public class Flower implements Disposable {
         ceilingCollisionCircle = new Circle(collisionCircle.x
                 , ceilingCollisionRectangle.y
                 , COLLISION_CIRCLE_RADIUS);
-        texture = new Texture(Gdx.files.internal("flower.png"));
-        stem = new Texture(Gdx.files.internal("stem.png"));
+
     }
 
     @Override

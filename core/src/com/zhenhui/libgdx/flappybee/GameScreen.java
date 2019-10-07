@@ -3,9 +3,12 @@ package com.zhenhui.libgdx.flappybee;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -25,12 +28,20 @@ public class GameScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
 
+    private Music music;
+
+    private Sound sound;
+
     //
     private FlappyBee flappyBee;
 
     private Array<Flower> flowers = new Array<>();
 
     private Background background;
+
+    private Texture flowerTexure;
+
+    private Texture stemTexure;
 
     private int score;
 
@@ -48,6 +59,16 @@ public class GameScreen extends ScreenAdapter {
         flappyBee.setPosition(Constants.WORLD_WIDTH / 4, Constants.WORLD_HEIGHT / 2);
 
         background = new Background();
+        flowerTexure = new Texture(Gdx.files.internal("flower.png"));
+        stemTexure = new Texture(Gdx.files.internal("stem.png"));
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("11638.wav"));
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        music.play();
+
+        sound = Gdx.audio.newSound(Gdx.files.internal("jump.mp3"));
+
     }
 
     @Override
@@ -55,11 +76,17 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.dispose();
         batch.dispose();
         background.dispose();
+        flowerTexure.dispose();
+        stemTexure.dispose();
         flappyBee.dispose();
 
         for (Flower flower : flowers) {
             flower.dispose();
         }
+
+        music.stop();
+        music.dispose();
+        sound.dispose();
     }
 
     @Override
@@ -111,6 +138,7 @@ public class GameScreen extends ScreenAdapter {
         checkForCollision();
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            sound.play(0.5f);
             flappyBee.flayUp();
         }
     }
@@ -169,7 +197,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void createNewFlower() {
-        Flower flower = new Flower();
+        Flower flower = new Flower(flowerTexure, stemTexure);
         flower.setPosition(Constants.WORLD_WIDTH + Flower.WIDTH);
         flowers.add(flower);
     }
@@ -183,5 +211,16 @@ public class GameScreen extends ScreenAdapter {
         flowers.clear();
         flappyBee.setPosition(Constants.WORLD_WIDTH / 4, Constants.WORLD_HEIGHT / 2);
     }
+
+    @Override
+    public void pause () {
+        music.pause();
+    }
+
+    @Override
+    public void resume () {
+        music.play();
+    }
+
 }
 

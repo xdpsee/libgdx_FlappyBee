@@ -20,8 +20,11 @@ public class Background implements Disposable {
 
     public void draw(SpriteBatch batch) {
 
+        batch.disableBlending();
+
         batch.draw(texture, 0, 0);
 
+        batch.enableBlending();
     }
 
 }
